@@ -1,0 +1,24 @@
+{
+  "name": "chainlink-functions",
+  "version": "1.0.0",
+  "description": "Project to play with chainlink functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://"
+  },
+  "keywords": [
+    "chainlink",
+    "functions",
+    "web3",
+    "solidity"
+  ],
+  "author": "JPS",
+  "license": "ISC",
+  "devDependencies": {
+    "hardhat": "^2.19.2"
+  }
+}

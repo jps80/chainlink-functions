@@ -1,6 +1,6 @@
 # Chainlink Functions
 
-Project to play and learning the use of Chainlink Functions.
+Project to play and learn to use Chainlink Functions.
 
 ## Notes
 configuracion minima:  

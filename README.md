@@ -2,6 +2,8 @@
 
 Project to play and learn to use Chainlink Functions.
 
+https://github.com/jps80/chainlink-functions-requests 
+
 ## Notes
 configuración minima:  
 

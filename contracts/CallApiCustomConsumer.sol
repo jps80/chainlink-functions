@@ -11,11 +11,10 @@ import {FunctionsRequest} from "@chainlink/contracts/src/v0.8/functions/dev/v1_0
  */
 
 /**
- * @title GettingStartedFunctionsConsumer
+ * @title CallApiCustomConsumer
  * @notice This is an example contract to show how to make HTTP requests using Chainlink
- * @dev This contract uses hardcoded values and should not be used in production.
  */
-contract GettingStartedFunctionsConsumer is FunctionsClient, ConfirmedOwner {
+contract CallApiCustomConsumer is FunctionsClient, ConfirmedOwner {
     using FunctionsRequest for FunctionsRequest.Request;
 
     // State variables to store the last request ID, response, and error
@@ -29,54 +28,30 @@ contract GettingStartedFunctionsConsumer is FunctionsClient, ConfirmedOwner {
     // Event to log responses
     event Response(
         bytes32 indexed requestId,
-        string character,
         bytes response,
         bytes err
     );
 
-    // Router address - Hardcoded for Mumbai
-    // Check to get the router address for your supported network https://docs.chain.link/chainlink-functions/supported-networks
-    address router = 0x6E2dc0F9DB014aE19888F539E59285D2Ea04244C;
-
-    // JavaScript source code
-    // Fetch character name from the Star Wars API.
-    // Documentation: https://swapi.dev/documentation#people
-    string source =
-        "const characterId = args[0];"
-        "const apiResponse = await Functions.makeHttpRequest({"
-        "url: `https://swapi.dev/api/people/${characterId}/`"
-        "});"
-        "if (apiResponse.error) {"
-        "throw Error('Request failed');"
-        "}"
-        "const { data } = apiResponse;"
-        "return Functions.encodeString(data.name);";
-
-    //Callback gas limit
-    uint32 gasLimit = 300000;
-
-    // donID - Hardcoded for Mumbai
-    // Check to get the donID for your supported network https://docs.chain.link/chainlink-functions/supported-networks
-    bytes32 donID =
-        0x66756e2d706f6c79676f6e2d6d756d6261692d31000000000000000000000000;
-
-    // State variable to store the returned character information
-    string public character;
-
     /**
      * @notice Initializes the contract with the Chainlink router address and sets the contract owner
      */
-    constructor() FunctionsClient(router) ConfirmedOwner(msg.sender) {}
+    constructor(address router) FunctionsClient(router) ConfirmedOwner(msg.sender) {}
 
     /**
      * @notice Sends an HTTP request for character information
+     * @param source JavaScript source code
      * @param subscriptionId The ID for the Chainlink subscription
      * @param args The arguments to pass to the HTTP request
+     * @param gasLimit gasLimit
+     * @param donID donID
      * @return requestId The ID of the request
      */
     function sendRequest(
+        string memory source,
         uint64 subscriptionId,
-        string[] memory args
+        string[] memory args,
+        uint32 gasLimit,
+        bytes32 donID
     ) external onlyOwner returns (bytes32 requestId) {
         FunctionsRequest.Request memory req;
         req.initializeRequestForInlineJavaScript(source); // Initialize the request with JS code
@@ -109,10 +84,9 @@ contract GettingStartedFunctionsConsumer is FunctionsClient, ConfirmedOwner {
         }
         // Update the contract's state variables with the response and any errors
         s_lastResponse = response;
-        character = string(response);
         s_lastError = err;
 
         // Emit an event to log the response
-        emit Response(requestId, character, s_lastResponse, s_lastError);
+        emit Response(requestId, s_lastResponse, s_lastError);
     }
 }
